@@ -114,7 +114,8 @@ epub.addSection('About the Author', about);
 (async () => {
   try {
     console.log('Generating a stand-alone EPUB.')
-    await epub.writeEPUB('example', 'example')
+    const files = await epub.getFilesForEPUB('example', 'example')
+    console.log(files)
   } catch (e) {
     console.log('ERROR')
     console.log(e)

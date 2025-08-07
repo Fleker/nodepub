@@ -1,6 +1,5 @@
 const path = require('path')
 const { resolve } = require('path')
-const fsPromises = require('fs').promises
 
 /**
  * Asynchronous forEach variant.
@@ -11,21 +10,6 @@ const forEachAsync = async (arr, cb) => {
   for (let index = 0; index < arr.length; index += 1) {
     await cb(arr[index], index, arr)
   }
-}
-
-/**
- * Create a folder, throwing an error only if the error is not that
- * the folder already exists. Effectively creates if not found.
- * @param {String} folder - folder to create
- */
-const makeFolder = async (folder) => {
-  await fsPromises.mkdir(folder)
-    .catch((err) => {
-      if (err && err.code !== 'EEXIST') {
-        throw err
-      }
-      resolve()
-    })
 }
 
 /**
@@ -46,6 +30,5 @@ const getImageType = (filename) => {
 
 module.exports = {
   forEachAsync,
-  makeFolder,
   getImageType
 }

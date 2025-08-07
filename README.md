@@ -7,6 +7,10 @@ Create valid EPUB 2 ebooks with metadata, contents, cover, and images.
 
 *This is a utility module, not a user-facing one. In other words it is assumed that the caller has already validated the inputs. Only basic sanity checks are performed.*
 
+NOTE: I (fleker) have modified this library slightly to work as an Obsidian
+plugin. In particular, I've removed the direct calls to the `fs` module.
+This means direct writes/reads won't work.
+
 ## Contents
 
 - [About Nodepub](#about-nodepub)

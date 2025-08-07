@@ -1,5 +1,3 @@
-const fs = require('fs')
-const fsPromises = require('fs').promises
 const path = require('path')
 const zip = require('archiver')
 const structuralFiles = require('./constituents/structural.js')
@@ -26,7 +24,7 @@ const document = (metadata, generateContentsCallback) => {
   self.coverImage = ''
 
   // Basic validation.
-  const required = ['id', 'title', 'author', 'cover']
+  const required = ['id', 'title', 'author']
   if (metadata == null) throw new Error('Missing metadata')
   required.forEach((field) => {
     const prop = metadata[field]
@@ -130,89 +128,8 @@ const document = (metadata, generateContentsCallback) => {
       })
     }
 
-    // Extra images - add filename into content property and prepare for async handling.
-    const coverFilename = path.basename(self.coverImage)
-    asyncFiles.push({
-      name: coverFilename, folder: 'OEBPF/images', compress: true, content: self.coverImage
-    })
-    if (self.metadata.images && self.metadata.images.length > 0) {
-      self.metadata.images = [...new Set(self.metadata.images)]
-      self.metadata.images.forEach((image) => {
-        const imageFilename = path.basename(image)
-        asyncFiles.push({
-          name: imageFilename, folder: 'OEBPF/images', compress: true, content: image
-        })
-      })
-    }
-
-    // Now async map to get the file contents.
-    await util.forEachAsync(asyncFiles, async (file) => {
-      const data = await fsPromises.readFile(file.content)
-      const loaded = {
-        name: file.name, folder: file.folder, compress: file.compress, content: data
-      }
-      syncFiles.push(loaded)
-    })
-
     // Return with the files.
     return syncFiles
-  }
-
-  //
-  // For valid EPUB files
-  /**
-   * Writes the files needed for the EPUB into a folder structure.
-   * If you compose an EPUB from the files the 'mimetype' MUST be
-   * the first entry in an EPUB (and uncompressed).
-   * @param {String} folder - location to write the files to
-   */
-  self.writeFilesForEPUB = async (folder) => {
-    const files = await self.getFilesForEPUB()
-    await util.makeFolder(folder)
-    await util.forEachAsync(files, async (file) => {
-      if (file.folder.length > 0) {
-        const f = `${folder}/${file.folder}`
-        await util.makeFolder(f)
-        await fsPromises.writeFile(`${f}/${file.name}`, file.content)
-      } else {
-        await fsPromises.writeFile(`${folder}/${file.name}`, file.content)
-      }
-    })
-  }
-
-  /**
-   * Writes the EPUB. The filename should not have an extention.
-   * @param {String} folder - location to write the EPUB into
-   * @param {String} filename - the EPUB filename, without an extention
-   */
-  self.writeEPUB = async (folder, filename) => {
-    const files = await self.getFilesForEPUB()
-
-    // Start creating the zip.
-    await util.makeFolder(folder)
-    const output = fs.createWriteStream(`${folder}/${filename}.epub`)
-    const archive = zip('zip', { store: false })
-    archive.on('error', (archiveErr) => {
-      throw archiveErr
-    })
-
-    await new Promise((resolve) => {
-      // Wait for file descriptor to be written.
-      archive.pipe(output)
-      output.on('close', () => resolve())
-
-      // Write the file contents.
-      files.forEach((file) => {
-        if (file.folder.length > 0) {
-          archive.append(file.content, { name: `${file.folder}/${file.name}`, store: !file.compress })
-        } else {
-          archive.append(file.content, { name: file.name, store: !file.compress })
-        }
-      })
-
-      // Done.
-      archive.finalize()
-    })
   }
 
   return self

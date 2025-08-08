@@ -1,8 +1,5 @@
-const path = require('path')
-const zip = require('archiver')
 const structuralFiles = require('./constituents/structural.js')
 const markupFiles = require('./constituents/markup.js')
-const util = require('./utility.js')
 
 /**
  * Construct a new document.

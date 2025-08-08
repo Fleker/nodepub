@@ -1,5 +1,5 @@
-const path = require('path')
 const replacements = require('./replacements')
+const basename = require('../basename')
 
 const markup = {
 
@@ -62,7 +62,7 @@ const markup = {
    * @returns the HTML (with any replacements applied)
    */
   getCover: (document) => {
-    const coverFilename = path.basename(document.coverImage)
+    const coverFilename = basename(document.coverImage)
     let result = ''
     result += "<?xml version='1.0' encoding='UTF-8' ?>[[EOL]]"
     result += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN'  'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>[[EOL]]"

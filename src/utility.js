@@ -1,4 +1,4 @@
-const path = require('path')
+const extname = require('./extname')
 
 /**
  * Asynchronous forEach variant.
@@ -17,7 +17,7 @@ const forEachAsync = async (arr, cb) => {
  * @returns the mimetype as a string (eg `image/png`)
  */
 const getImageType = (filename) => {
-  const imageExt = path.extname(filename).toLowerCase()
+  const imageExt = extname(filename).toLowerCase()
   let imageType = ''
   imageType = (imageExt === '.svg') ? 'image/svg+xml' : imageType
   imageType = (imageExt === '.png') ? 'image/png' : imageType

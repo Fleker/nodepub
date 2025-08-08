@@ -1,6 +1,6 @@
-const path = require('path')
 const replacements = require('./replacements')
 const util = require('../utility.js')
+const basename = require('../basename')
 
 const structural = {
 
@@ -32,7 +32,7 @@ const structural = {
    * @returns the OPF (spine) content
    */
   getOPF: (document) => {
-    const coverFilename = path.basename(document.coverImage)
+    const coverFilename = basename(document.coverImage)
     let i
     let result = ''
     result += "<?xml version='1.0' encoding='utf-8'?>[[EOL]]"
@@ -96,7 +96,7 @@ const structural = {
     if (document.metadata.images) {
       for (i = 0; i < document.metadata.images.length; i += 1) {
         const image = document.metadata.images[i]
-        const imageFile = path.basename(image)
+        const imageFile = basename(image)
         const imageType = util.getImageType(image)
         if (imageType.length > 0) {
           result += `    <item id='img${i}' media-type='${imageType}' href='images/${imageFile}'/>[[EOL]]`
